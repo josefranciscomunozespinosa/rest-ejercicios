@@ -218,66 +218,87 @@ insert into student_course values (10002, 1004);
 # Assemblers
 src/main/java/es/eoi/springboot/rest/example/dto/asembler/CourseModelAssembler.java
 ```java
-package es.eoi.springboot.rest.example.dto.asembler;
+package es.eoi.springboot.rest.example.controller;
 
-import es.eoi.springboot.rest.example.controller.CourseController;
-import es.eoi.springboot.rest.example.controller.StudentController;
 import es.eoi.springboot.rest.example.dto.CourseModel;
-import es.eoi.springboot.rest.example.dto.StudentModel;
+import es.eoi.springboot.rest.example.dto.asembler.CourseModelAssembler;
 import es.eoi.springboot.rest.example.entity.Course;
-import es.eoi.springboot.rest.example.entity.Student;
-import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
-import org.springframework.stereotype.Component;
+import es.eoi.springboot.rest.example.repository.CourseRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.util.Collections;
+import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+@RestController
+public class CourseController {
 
-@Component
-public class CourseModelAssembler extends RepresentationModelAssemblerSupport<Course, CourseModel> {
+	@Autowired
+	private CourseRepository courseRepository;
 
-    public CourseModelAssembler() {
-        super(CourseController.class, CourseModel.class);
-    }
+	@Autowired
+	CourseModelAssembler courseModelAssembler;
 
-    @Override
-    public CourseModel toModel(Course entity) {
 
-        CourseModel CourseModel = instantiateModel(entity);
+	@GetMapping("/api/courses")
+	public ResponseEntity<CollectionModel<CourseModel>> getAllCourses()
+	{
+		List<Course> courseEntityList = courseRepository.findAll();
+		return new ResponseEntity<>(
+				courseModelAssembler.toCollectionModel(courseEntityList),
+				HttpStatus.OK);
+	}
 
-        CourseModel.add(linkTo(
-                methodOn(CourseController.class)
-                        .getCourseById(entity.getId()))
-                .withSelfRel());
 
-        CourseModel.setId(entity.getId());
-        CourseModel.setName(entity.getName());
-        CourseModel.setDescription(entity.getDescription());
-        CourseModel.setStudents(toStudentModel(entity.getStudents()));
-        return CourseModel;
-    }
+	@GetMapping("/api/course/{id}")
+	public ResponseEntity<CourseModel> getCourseById(@PathVariable("id") Long id)
+	{
+		return courseRepository.findById(id)
+				.map(courseModelAssembler::toModel)
+				.map(ResponseEntity::ok)
+				.orElse(ResponseEntity.notFound().build());
+	}
 
-    private List<StudentModel> toStudentModel(List<Student> students) {
-        if (students.isEmpty())
-            return Collections.emptyList();
-        return students.stream()
-                .map(student -> StudentModel.builder()
-                        .id(student.getId())
-                        .name(student.getName())
-                        .passportNumber(student.getPassportNumber())
-                        .build()
-                        .add(linkTo(
-                                methodOn(StudentController.class)
-                                        .getStudentById(student.getId()))
-                                .withSelfRel()))
-                .collect(Collectors.toList());
-    }
 
+	@DeleteMapping("/api/courses/{id}")
+	@ResponseStatus(HttpStatus.ACCEPTED)
+	public void deleteCourseApi(@PathVariable long id) {
+		courseRepository.deleteById(id);
+	}
+
+
+	@PostMapping("/api/courses")
+	public ResponseEntity<CourseModel> createCourseApi(@RequestBody Course course) {
+		Course savedCourse = courseRepository.save(course);
+
+		final URI location = ServletUriComponentsBuilder.fromCurrentRequestUri()
+				.path("/{id}")
+				.buildAndExpand(savedCourse.getId())
+				.toUri();
+
+		return ResponseEntity.created(location).body(courseModelAssembler.toModel(savedCourse));
+	}
+
+	@PutMapping("/api/courses/{id}")
+	public ResponseEntity<CourseModel> updateCourseApi(@RequestBody Course course, @PathVariable long id) {
+
+		Optional<Course> courseOptional = courseRepository.findById(id);
+
+		if (!courseOptional.isPresent()) {
+			return ResponseEntity.notFound().build();
+		}
+
+		course.setId(id);
+
+		Course savedCourse = courseRepository.save(course);
+		return ResponseEntity.ok().body(courseModelAssembler.toModel(savedCourse));
+	}
 }
-
 ```
 
 src/main/java/es/eoi/springboot/rest/example/dto/asembler/CourseModelAssembler.java
