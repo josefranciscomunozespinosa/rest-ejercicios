@@ -224,6 +224,29 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 ### /src/main/java/es/eoi/springboot/rest/example/student/StudentController.java
 
 ```java
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
+import java.net.URI;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import io.swagger.annotations.ApiOperation;
+
 @RestController
 public class StudentController {
 
@@ -237,15 +260,15 @@ public class StudentController {
 
     @GetMapping("/students/{id}")
     @ApiOperation(value = "Find student by id", notes = "Also returns a link to retrieve all students with rel - all-students")
-    public EntityModel<Student> retrieveStudent(@PathVariable long id) {
+    public Resource<Student> retrieveStudent(@PathVariable long id) {
 	Optional<Student> student = studentRepository.findById(id);
 
 	if (!student.isPresent())
 		throw new StudentNotFoundException("id-" + id);
 
-	EntityModel<Student> resource = EntityModel.of(student.get());
+	Resource<Student> resource = new Resource<Student>(student.get());
 
-	WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).retrieveAllStudents());
+	ControllerLinkBuilder linkTo = linkTo(methodOn(this.getClass()).retrieveAllStudents());
 
 	resource.add(linkTo.withRel("all-students"));
 
@@ -469,6 +492,28 @@ public class Student {
 ### /src/main/java/es/eoi/springboot/rest/example/student/StudentController.java
 
 ```java
+package es.eoi.springboot.rest.example.student;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+import java.net.URI;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 @RestController
 public class StudentController {
 
@@ -480,6 +525,7 @@ public class StudentController {
         return studentRepository.findAll();
     }
 
+    /* try it with EntityModel instead of Resources and check the differences 
     @GetMapping("/students/{id}")
     @ApiOperation(value = "Find student by id",
             notes = "Also returns a link to retrieve all students with rel - all-students")
@@ -497,7 +543,24 @@ public class StudentController {
 
         return resource;
     }
+    */
+    
+    @GetMapping("/students/{id}")
+    public EntityModel<Student> retrieveStudent(@PathVariable long id) {
+        Optional<Student> student = studentRepository.findById(id);
 
+        if (!student.isPresent())
+                throw new StudentNotFoundException("id-" + id);
+
+        EntityModel<Student> resource = EntityModel.of(student.get());
+        
+	WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).retrieveAllStudents());
+
+        resource.add(linkTo.withRel("all-students"));
+
+        return resource;
+    }    
+    
     @DeleteMapping("/students/{id}")
     public void deleteStudent(@PathVariable long id) {
         studentRepository.deleteById(id);
