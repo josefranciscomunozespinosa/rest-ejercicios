@@ -347,3 +347,61 @@ public class StudentModelAssembler extends RepresentationModelAssemblerSupport<S
 ```
 
 
+
+# Models
+src/main/java/es/eoi/springboot/rest/example/dto/CourseModel.java
+```java
+package es.eoi.springboot.rest.example.dto;
+
+import lombok.*;
+import org.springframework.hateoas.RepresentationModel;
+
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import java.util.List;
+
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = false)
+public class CourseModel extends RepresentationModel<CourseModel> {
+
+	@Id
+	@GeneratedValue
+	private Long id;
+	private String name;
+	private String description;
+
+	private List<StudentModel> students;
+}
+
+```
+
+```java
+package es.eoi.springboot.rest.example.dto;
+
+import lombok.*;
+import org.springframework.hateoas.RepresentationModel;
+
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import java.util.List;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
+public class StudentModel extends RepresentationModel<StudentModel> {
+	@Id
+	@GeneratedValue
+	private Long id;
+	private String name;
+	private String passportNumber;
+
+	private List<CourseModel> courses;
+}
+
+```
+
