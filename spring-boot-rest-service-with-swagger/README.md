@@ -236,19 +236,20 @@ public class StudentController {
     }
 
     @GetMapping("/students/{id}")
-    public Resource<Student> retrieveStudent(@PathVariable long id) {
-        Optional<Student> student = studentRepository.findById(id);
+    @ApiOperation(value = "Find student by id", notes = "Also returns a link to retrieve all students with rel - all-students")
+    public EntityModel<Student> retrieveStudent(@PathVariable long id) {
+	Optional<Student> student = studentRepository.findById(id);
 
-        if (!student.isPresent())
-            throw new StudentNotFoundException("id-" + id);
+	if (!student.isPresent())
+		throw new StudentNotFoundException("id-" + id);
 
-        Resource<Student> resource = new Resource<Student>(student.get());
+	EntityModel<Student> resource = EntityModel.of(student.get());
 
-        ControllerLinkBuilder linkTo = linkTo(methodOn(this.getClass()).retrieveAllStudents());
+	WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).retrieveAllStudents());
 
-        resource.add(linkTo.withRel("all-students"));
+	resource.add(linkTo.withRel("all-students"));
 
-        return resource;
+	return resource;
     }
 
     @DeleteMapping("/students/{id}")
