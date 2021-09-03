@@ -149,7 +149,11 @@ package es.eoi.springboot.rest.example.entity;
 @Entity
 public class Student implements Serializable {
 
-    //...
+    @Id
+    @GeneratedValue
+    private Long id;
+    private String name;
+    private String passportNumber;
     
     @ManyToMany(cascade=CascadeType.ALL)
     @JoinTable(
