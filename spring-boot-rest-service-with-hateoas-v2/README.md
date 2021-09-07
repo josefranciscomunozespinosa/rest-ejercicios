@@ -462,8 +462,31 @@ public class StudentController {
 				studentModelAssembler.toCollectionModel(actorEntities),
 				HttpStatus.OK);
 	}
+	
+	@GetMapping("/api/student/{id}")
+	public ResponseEntity<StudentModel> getStudentById(@PathVariable("id") Long id)
+	{
+		return null; //TODO
+	}
   	
-	// TODO
+	
+	@DeleteMapping("/api/students/{id}")
+	@ResponseStatus(HttpStatus.ACCEPTED)
+	public void deleteStudentApi(@PathVariable long id) {
+		studentRepository.deleteById(id);
+	}
+
+
+	@PostMapping("/api/students")
+	public ResponseEntity<StudentModel> createStudentApi(@RequestBody Student student) {
+		return null; //TODO
+	}
+	
+	@PutMapping("/api/students/{id}")
+	public ResponseEntity<StudentModel> updateStudentApi(@RequestBody Student student, @PathVariable long id) {
+
+		return null; //TODO
+	}
 }
 ```
 
