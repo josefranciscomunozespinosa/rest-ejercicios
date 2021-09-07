@@ -438,10 +438,27 @@ public class CourseController {
 
 ```
 
+src/main/java/es/eoi/springboot/rest/example/controller/StudentController.java
 ```java
 @RestController
 public class StudentController {
-  // TODO
+
+	@Autowired
+	private StudentRepository studentRepository;
+
+	@Autowired
+	StudentModelAssembler studentModelAssembler;
+	
+	@GetMapping("/api/students")
+	public ResponseEntity<CollectionModel<StudentModel>> getAllStudents()
+	{
+		List<Student> actorEntities = studentRepository.findAll();
+		return new ResponseEntity<>(
+				studentModelAssembler.toCollectionModel(actorEntities),
+				HttpStatus.OK);
+	}
+  	
+	// TODO
 }
 ```
 
