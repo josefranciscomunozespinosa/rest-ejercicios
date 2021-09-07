@@ -181,7 +181,11 @@ package es.eoi.springboot.rest.example.entity;
 @Entity
 public class Course {
 
-    //...
+    @Id
+    @GeneratedValue
+    private Long id;
+    private String name;
+    private String description;
 
     @ManyToMany(mappedBy = "courses", fetch = FetchType.EAGER)
     private List<Student> students;
@@ -285,6 +289,13 @@ public class StudentModelAssembler extends RepresentationModelAssemblerSupport<S
 }
 ```
 
+src/main/java/es/eoi/springboot/rest/example/dto/asembler/StudentModelAssembler.java
+```java
+@Component
+public class StudentModelAssembler extends RepresentationModelAssemblerSupport<Student, StudentModel> {
+    //..
+}
+```
 
 # Models
 src/main/java/es/eoi/springboot/rest/example/dto/CourseModel.java
