@@ -293,7 +293,7 @@ src/main/java/es/eoi/springboot/rest/example/dto/asembler/StudentModelAssembler.
 ```java
 @Component
 public class StudentModelAssembler extends RepresentationModelAssemblerSupport<Student, StudentModel> {
-    //..
+    // TODO
 }
 ```
 
@@ -316,8 +316,6 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 public class CourseModel extends RepresentationModel<CourseModel> {
 
-	@Id
-	@GeneratedValue
 	private Long id;
 	private String name;
 	private String description;
@@ -343,8 +341,7 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class StudentModel extends RepresentationModel<StudentModel> {
-	@Id
-	@GeneratedValue
+
 	private Long id;
 	private String name;
 	private String passportNumber;
@@ -440,3 +437,11 @@ public class CourseController {
 }
 
 ```
+
+```java
+@RestController
+public class StudentController {
+  // TODO
+}
+```
+
