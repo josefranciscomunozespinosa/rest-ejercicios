@@ -48,7 +48,7 @@ A few details:
 - pom.xml - Contains all the dependencies needed to build this project. We will use Spring Boot Starter AOP.
 - Student.java - Student JPA Entity
 - StudentRepository.java - Student JPA Repository. This is created using Spring Data JpaRepository.
-- StudentResource.java - Spring Rest Controller exposing all services on the student resource.
+- StudentController.java - Spring Rest Controller exposing all services on the student resource.
 - data.sql - Initial data for the student table. Spring Boot would execute this script after the tables are created from the entities.
 
 
@@ -280,7 +280,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 ```
 ---
 
-### /src/main/java/es/eoi/springboot/rest/example/student/StudentResource.java
+### /src/main/java/es/eoi/springboot/rest/example/student/StudentController.java
 To implement HATEOAS, we would need to include related resources in the response.
 
 Instead of Student we use a return type of EntityModel<Student>.
