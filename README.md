@@ -30,5 +30,5 @@ Ejercicios Spring boot, jdbc, data, rest, hateoas, etc.
 - [Aplicación Web con servicios REST y Spring Data JPA](https://danielme.com/2018/02/21/tutorial-spring-boot-web-spring-data-jpa/)
 - [Paginación](https://howtodoinjava.com/spring5/hateoas/pagination-links/)
 - [Embedded collection model name](https://howtodoinjava.com/spring5/hateoas/embedded-collection-name/)
-- [Relaciones y atributos lazy](https://danielme.com/2018/01/03/hibernatejpa-relaciones-y-atributos-lazy-bytecode-enhacement/)
+- [Relaciones y atributos lazy](https://danielme.com/2018/01/03/hibernatejpa-relaciones-y-atributos-lazy-bytecode-enhacement/) (Sin spring)
 - [Cambiar el banner de Spring boot](https://danielme.com/2019/06/14/tips-spring-boot-banner-ascii-de-inicio/)
