@@ -246,53 +246,58 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
-public class StudentModelAssembler extends RepresentationModelAssemblerSupport<Student, StudentModel> {
+public class CourseModelAssembler extends RepresentationModelAssemblerSupport<Course, CourseModel> {
 
-    public StudentModelAssembler() {
-        super(StudentController.class, StudentModel.class);
+    public CourseModelAssembler() {
+        super(CourseController.class, CourseModel.class);
     }
 
     @Override
-    public StudentModel toModel(Student entity) {
+    public CourseModel toModel(Course entity) {
 
-        StudentModel studentModel = instantiateModel(entity);
+        CourseModel CourseModel = instantiateModel(entity);
 
-        studentModel.add(linkTo(
-                methodOn(StudentController.class)
-                        .getStudentById(entity.getId()))
+        CourseModel.add(linkTo(
+                methodOn(CourseController.class)
+                        .getCourseById(entity.getId()))
                 .withSelfRel());
 
-        studentModel.setId(entity.getId());
-        studentModel.setName(entity.getName());
-        studentModel.setPassportNumber(entity.getPassportNumber());
-
-        studentModel.setCourses(toCourseModel(entity.getCourses()));
-        return studentModel;
+        CourseModel.setId(entity.getId());
+        CourseModel.setName(entity.getName());
+        CourseModel.setDescription(entity.getDescription());
+        CourseModel.setStudents(toStudentModel(entity.getStudents()));
+        return CourseModel;
     }
 
-    private List<CourseModel> toCourseModel(List<Course> courses) {
-        if (courses.isEmpty())
+    private List<StudentModel> toStudentModel(List<Student> students) {
+        if (students.isEmpty())
             return Collections.emptyList();
-        return courses.stream()
-                .map(course -> CourseModel.builder()
-                        .id(course.getId())
-                        .name(course.getName())
-                        .description(course.getDescription())
+        return students.stream()
+                .map(student -> StudentModel.builder()
+                        .id(student.getId())
+                        .name(student.getName())
+                        .passportNumber(student.getPassportNumber())
                         .build()
                         .add(linkTo(
-                                methodOn(CourseController.class)
-                                        .getCourseById(course.getId()))
+                                methodOn(StudentController.class)
+                                        .getStudentById(student.getId()))
                                 .withSelfRel()))
                 .collect(Collectors.toList());
     }
 
 }
+
 ```
 
 src/main/java/es/eoi/springboot/rest/example/dto/asembler/StudentModelAssembler.java
 ```java
 @Component
 public class StudentModelAssembler extends RepresentationModelAssemblerSupport<Student, StudentModel> {
+
+    public StudentModelAssembler() {
+        super(StudentController.class, StudentModel.class);
+    }
+    
     // TODO
 }
 ```
