@@ -220,7 +220,131 @@ insert into student_course values (10002, 1004);
 
 
 # Assemblers
+
 src/main/java/es/eoi/springboot/rest/example/dto/asembler/CourseModelAssembler.java
+```java
+package es.eoi.springboot.rest.example.dto.asembler;
+
+import es.eoi.springboot.rest.example.controller.CourseController;
+import es.eoi.springboot.rest.example.controller.StudentController;
+import es.eoi.springboot.rest.example.dto.CourseModel;
+import es.eoi.springboot.rest.example.dto.StudentModel;
+import es.eoi.springboot.rest.example.entity.Course;
+import es.eoi.springboot.rest.example.entity.Student;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
+import org.springframework.stereotype.Component;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
+@Component
+public class StudentModelAssembler extends RepresentationModelAssemblerSupport<Student, StudentModel> {
+
+    public StudentModelAssembler() {
+        super(StudentController.class, StudentModel.class);
+    }
+
+    @Override
+    public StudentModel toModel(Student entity) {
+
+        StudentModel studentModel = instantiateModel(entity);
+
+        studentModel.add(linkTo(
+                methodOn(StudentController.class)
+                        .getStudentById(entity.getId()))
+                .withSelfRel());
+
+        studentModel.setId(entity.getId());
+        studentModel.setName(entity.getName());
+        studentModel.setPassportNumber(entity.getPassportNumber());
+
+        studentModel.setCourses(toCourseModel(entity.getCourses()));
+        return studentModel;
+    }
+
+    private List<CourseModel> toCourseModel(List<Course> courses) {
+        if (courses.isEmpty())
+            return Collections.emptyList();
+        return courses.stream()
+                .map(course -> CourseModel.builder()
+                        .id(course.getId())
+                        .name(course.getName())
+                        .description(course.getDescription())
+                        .build()
+                        .add(linkTo(
+                                methodOn(CourseController.class)
+                                        .getCourseById(course.getId()))
+                                .withSelfRel()))
+                .collect(Collectors.toList());
+    }
+
+}
+```
+
+
+# Models
+src/main/java/es/eoi/springboot/rest/example/dto/CourseModel.java
+```java
+package es.eoi.springboot.rest.example.dto;
+
+import lombok.*;
+import org.springframework.hateoas.RepresentationModel;
+
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import java.util.List;
+
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = false)
+public class CourseModel extends RepresentationModel<CourseModel> {
+
+	@Id
+	@GeneratedValue
+	private Long id;
+	private String name;
+	private String description;
+
+	private List<StudentModel> students;
+}
+
+```
+
+```java
+package es.eoi.springboot.rest.example.dto;
+
+import lombok.*;
+import org.springframework.hateoas.RepresentationModel;
+
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import java.util.List;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
+public class StudentModel extends RepresentationModel<StudentModel> {
+	@Id
+	@GeneratedValue
+	private Long id;
+	private String name;
+	private String passportNumber;
+
+	private List<CourseModel> courses;
+}
+
+```
+
+# Controllers
+src/main/java/es/eoi/springboot/rest/example/controller/CourseController.java
 ```java
 package es.eoi.springboot.rest.example.controller;
 
@@ -303,130 +427,5 @@ public class CourseController {
 		return ResponseEntity.ok().body(courseModelAssembler.toModel(savedCourse));
 	}
 }
-```
-
-src/main/java/es/eoi/springboot/rest/example/dto/asembler/CourseModelAssembler.java
-```java
-package es.eoi.springboot.rest.example.dto.asembler;
-
-import es.eoi.springboot.rest.example.controller.CourseController;
-import es.eoi.springboot.rest.example.controller.StudentController;
-import es.eoi.springboot.rest.example.dto.CourseModel;
-import es.eoi.springboot.rest.example.dto.StudentModel;
-import es.eoi.springboot.rest.example.entity.Course;
-import es.eoi.springboot.rest.example.entity.Student;
-import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
-import org.springframework.stereotype.Component;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
-@Component
-public class StudentModelAssembler extends RepresentationModelAssemblerSupport<Student, StudentModel> {
-
-    public StudentModelAssembler() {
-        super(StudentController.class, StudentModel.class);
-    }
-
-    @Override
-    public StudentModel toModel(Student entity) {
-
-        StudentModel studentModel = instantiateModel(entity);
-
-        studentModel.add(linkTo(
-                methodOn(StudentController.class)
-                        .getStudentById(entity.getId()))
-                .withSelfRel());
-
-        studentModel.setId(entity.getId());
-        studentModel.setName(entity.getName());
-        studentModel.setPassportNumber(entity.getPassportNumber());
-
-        studentModel.setCourses(toCourseModel(entity.getCourses()));
-        return studentModel;
-    }
-
-    private List<CourseModel> toCourseModel(List<Course> courses) {
-        if (courses.isEmpty())
-            return Collections.emptyList();
-        return courses.stream()
-                .map(course -> CourseModel.builder()
-                        .id(course.getId())
-                        .name(course.getName())
-                        .description(course.getDescription())
-                        .build()
-                        .add(linkTo(
-                                methodOn(CourseController.class)
-                                        .getCourseById(course.getId()))
-                                .withSelfRel()))
-                .collect(Collectors.toList());
-    }
-
-}
-
 
 ```
-
-
-
-# Models
-src/main/java/es/eoi/springboot/rest/example/dto/CourseModel.java
-```java
-package es.eoi.springboot.rest.example.dto;
-
-import lombok.*;
-import org.springframework.hateoas.RepresentationModel;
-
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import java.util.List;
-
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-public class CourseModel extends RepresentationModel<CourseModel> {
-
-	@Id
-	@GeneratedValue
-	private Long id;
-	private String name;
-	private String description;
-
-	private List<StudentModel> students;
-}
-
-```
-
-```java
-package es.eoi.springboot.rest.example.dto;
-
-import lombok.*;
-import org.springframework.hateoas.RepresentationModel;
-
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import java.util.List;
-
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
-public class StudentModel extends RepresentationModel<StudentModel> {
-	@Id
-	@GeneratedValue
-	private Long id;
-	private String name;
-	private String passportNumber;
-
-	private List<CourseModel> courses;
-}
-
-```
-
