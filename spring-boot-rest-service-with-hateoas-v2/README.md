@@ -463,6 +463,13 @@ public class StudentController {
 				HttpStatus.OK);
 	}
 	
+	/* Same data than getAllStudents method but without HATEOAS (in different path)
+	@GetMapping("/students")
+	public List<Student> retrieveAllStudents() {
+		return studentRepository.findAll();
+	}
+	*/
+	
 	@GetMapping("/api/student/{id}")
 	public ResponseEntity<StudentModel> getStudentById(@PathVariable("id") Long id)
 	{
