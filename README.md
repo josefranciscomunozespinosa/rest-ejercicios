@@ -30,5 +30,7 @@ Ejercicios Spring boot, jdbc, data, rest, hateoas, etc.
 - [Aplicación Web con servicios REST y Spring Data JPA](https://danielme.com/2018/02/21/tutorial-spring-boot-web-spring-data-jpa/) aquí se ve como configurar log4j con xml, el pool de conexiones, los campos not nullable, añadir JSP para visualizar en el front, los ficheros .war en vez de .jar, server.servlet.context-path, etc. Muy interesante.
 - [Paginación](https://howtodoinjava.com/spring5/hateoas/pagination-links/) Cuando nuestras listas de recursos son muy largas es muy recomendable añadirle paginación. 
 - [Embedded collection model name](https://howtodoinjava.com/spring5/hateoas/embedded-collection-name/). Habrá momentos que necesitemos utilizar una clase embebida para que se guarde en la misma tabla.
-- [Relaciones y atributos lazy](https://danielme.com/2018/01/03/hibernatejpa-relaciones-y-atributos-lazy-bytecode-enhacement/) (Sin spring)
 - [Cambiar el banner de Spring boot](https://danielme.com/2019/06/14/tips-spring-boot-banner-ascii-de-inicio/). Una chorrada, pero para que sepáis que es personalizable.
+
+## Otros (sin spring)
+- [Relaciones y atributos lazy](https://danielme.com/2018/01/03/hibernatejpa-relaciones-y-atributos-lazy-bytecode-enhacement/) (Sin spring)
