@@ -21,9 +21,6 @@ Ejercicios Spring boot, jdbc, data, rest, hateoas, etc.
 - [Spring boot, REST básico + swagger + exception handling con h2](spring-boot-rest-service-exception-handling/)
 - [Spring boot, REST básico con mysql y problema CORS resuelto](spring-boot-rest-service-cors-with-mysql/)
 
-## Tests
-- [Spring boot, REST básico con test unit](spring-boot-rest-services-with-unit-and-integration-tests/)
-
 ## Más ejercicios interesantes
 - Hacer este [tutorial guiado](https://howtodoinjava.com/spring5/hateoas/spring-hateoas-tutorial/) de HATEOAS
   - Assemblers y relaciones con h2
@@ -34,3 +31,7 @@ Ejercicios Spring boot, jdbc, data, rest, hateoas, etc.
 
 ## Otros (sin spring)
 - [Relaciones y atributos lazy](https://danielme.com/2018/01/03/hibernatejpa-relaciones-y-atributos-lazy-bytecode-enhacement/) (Sin spring)
+
+## Tests
+- [Spring boot, REST básico con test unit](spring-boot-rest-services-with-unit-and-integration-tests/)
+
