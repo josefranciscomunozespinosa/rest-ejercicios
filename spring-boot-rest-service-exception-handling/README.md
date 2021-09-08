@@ -90,20 +90,20 @@ Let’s enhance the GET method to throw this exception when a student is not fou
 
 ```java
 @GetMapping("/students/{id}")
-  public Resource<Student> retrieveStudent(@PathVariable long id) {
-    Optional<Student> student = studentRepository.findById(id);
+public EntityModel<Student> retrieveStudent(@PathVariable long id) {
+	Optional<Student> student = studentRepository.findById(id);
 
-    if (!student.isPresent())
-      throw new StudentNotFoundException("id-" + id);
+	if (!student.isPresent())
+		throw new StudentNotFoundException("id-" + id);
 
-    Resource<Student> resource = new Resource<Student>(student.get());
+	EntityModel<Student> resource = EntityModel.of(student.get());
 
-    ControllerLinkBuilder linkTo = linkTo(methodOn(this.getClass()).retrieveAllStudents());
+	WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).retrieveAllStudents());
 
-    resource.add(linkTo.withRel("all-students"));
+	resource.add(linkTo.withRel("all-students"));
 
-    return resource;
-  }
+	return resource;
+}
 ```
 
 This is the response when you try getting details of a non existing student http://localhost:8080/students/9.
